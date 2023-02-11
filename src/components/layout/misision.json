@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_layout_misisions",
+  "info": {
+    "displayName": "misision"
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Our mission",
+      "required": true
+    },
+    "content": {
+      "type": "text",
+      "required": true
+    },
+    "showLogo": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  }
+}

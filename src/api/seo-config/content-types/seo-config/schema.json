@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "seo_configs",
+  "info": {
+    "singularName": "seo-config",
+    "pluralName": "seo-configs",
+    "displayName": "SeoConfig"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "defaultSeo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "seo.seo-information"
+    }
+  }
+}
