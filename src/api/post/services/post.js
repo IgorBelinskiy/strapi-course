@@ -50,5 +50,29 @@ module.exports = createCoreService('api::post.post', ({ strapi }) =>  ({
       }
     };
   return await strapi.entityService.findMany('api::post.post', this.getFetchParams(newQuery));
+  },
+
+  async findOneIfPublic(args) {
+    const { id, query } = args;
+    const post = await strapi.entityService.findOne('api::post.post', id, this.getFetchParams(query));
+    return post.premium ? null : post;
+  },
+
+  async likePost(args) {
+    const { userId, postId, query } = args;
+    console.log('userId, postId, query', userId, postId, query)
+
+    const postToLike = await strapi.entityService.findOne('api::post.post', postId, {
+      populate: ['likedBy']
+    });
+
+    const updatePost = await strapi.entityService.update('api::post.post', postId, {
+      data: {
+        likedBy: [...postToLike.likedBy, userId]
+      },
+      ...query
+    });
+
+    return updatePost;
   }
 }));

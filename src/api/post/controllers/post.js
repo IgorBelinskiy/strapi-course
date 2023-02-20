@@ -77,17 +77,39 @@ module.exports = createCoreController('api::post.post', ({strapi}) => ({
   },
 
   // Method 3: Replacing a core action
-  async findOne(ctx) { // 'posts/:id'
-    console.log('ctx.params', ctx.params)
-    const { id } = ctx.params;
+  // async findOne(ctx) { // 'posts/:id'
+  //   console.log('ctx.params', ctx.params)
+  //   const { id } = ctx.params;
+  //   const { query } = ctx;
+  //
+  //   const entity = await strapi
+  //     .service('api::post.post')
+  //     .findOne(id, query);
+  //   const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
+  //
+  //   // return sanitizedEntity;
+  //   return this.transformResponse(sanitizedEntity);
+  // },
+
+  // Method 4: Replacing a core action
+  async findOne(ctx) {
+    if (ctx.state.user) return await super.findOne(ctx);
+    const { id } = ctx.params;  // 'posts/:id'
     const { query } = ctx;
+    console.log('ctx.query', ctx.query, id)
+    const postIfPublic = await strapi.service('api::post.post').findOneIfPublic({ id, query });
 
-    const entity = await strapi
-      .service('api::post.post')
-      .findOne(id, query);
-    const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
+    const sanitizedEntity = await this.sanitizeOutput(postIfPublic, ctx);
+    return this.transformResponse(sanitizedEntity);
+  },
 
-    // return sanitizedEntity;
+  async likePost(ctx) {
+    // ctx.state.user
+    const user = ctx.state.user;
+    const postId = ctx.params.id;
+    const { query } = ctx;
+    const updatedPost = await strapi.service('api::post.post').likePost({ userId: user.id, postId, query });
+    const sanitizedEntity = await this.sanitizeOutput(updatedPost, ctx);
     return this.transformResponse(sanitizedEntity);
   },
 }));
